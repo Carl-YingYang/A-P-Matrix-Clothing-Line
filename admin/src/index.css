@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* GLOBAL SMOOTH TRANSITION - Eto yung mag-aayos ng sakit sa mata */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 500ms; /* Half a second fade */
+  }
+
+  body {
+    /* LIGHT MODE DEFAULTS */
+    @apply bg-[#f4f7fe] text-gray-900;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* DARK MODE DEFAULTS */
+  .dark body {
+    @apply bg-[#050505] text-[#fafafa];
+  }
+
+  /* Elegant Font for Admin Logo */
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+/* ========================================================= */
+/* SCROLLBAR KILLER & OVERFLOW FIX                           */
+/* ========================================================= */
+
+/* 1. Pigilan ang buong website na mag-scroll pa-kaliwa't kanan */
+html, body, #root {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* 2. Totally itago ang horizontal scrollbar sa lahat ng components/tables */
+::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
+/* 3. Paliitin at pagandahin ang Vertical Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* Gray color for light mode */
+  border-radius: 10px;
+}
+
+/* 🔥 FIX: Gamitin ang .dark class para sumabay sa Sun/Moon toggle mo! */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #3f3f46; /* Darker gray for dark mode */
+}
+
+/* Fallback for Firefox (itago ang horizontal, panipisin ang vertical) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent; /* Light mode */
+}
+
+/* Firefox Dark mode fix */
+.dark * {
+  scrollbar-color: #3f3f46 transparent;
+}
+
+/* Custom Scrollbar for AI Chat Area */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2a2a2b;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3f3f42;
+}

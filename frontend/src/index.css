@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #09090b; /* Zinc 950 - Industrial Dark */
+    color: #fafafa;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Elegant font for headers */
+  h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+
+  ::selection {
+    background-color: #3f3f46;
+    color: #ffffff;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Para sa transitions na hindi masakit sa mata */
+.framer-page-wrapper {
+  will-change: opacity, transform;
+}
+
+/* Custom Dark Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+  border-left: 1px solid #27272a;
+}
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+/* ========================================================= */
+/* 💡 DYNAMIC AMBIENT GLOW ANIMATIONS 💡 */
+/* ========================================================= */
+@keyframes ambient-drift {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  33% { transform: translate(3%, -4%) scale(1.1); opacity: 0.7; }
+  66% { transform: translate(-3%, 4%) scale(0.9); opacity: 0.5; }
+  100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+}
+
+.animate-ambient-fast {
+  animation: ambient-drift 12s ease-in-out infinite;
+}
+
+.animate-ambient-slow {
+  animation: ambient-drift 18s ease-in-out infinite;
+  animation-delay: -5s; /* Naka-offset para hindi sabay ang galaw ng dalawang ilaw */
+}
