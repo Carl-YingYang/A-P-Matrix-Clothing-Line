@@ -253,8 +253,8 @@ def send_quote(inquiry_id: int, req: QuoteRequest, db: Session = Depends(get_db)
     except Exception as e:
         raise HTTPException(status_code=500, detail="Failed to generate payment link.")
 
+    # --- 2. EMAIL LOGIC NA MAY SARILING TRY-EXCEPT (PARA HINDI MAG-CRASH) ---
     try:
-        # --- 2. EXISTING GMAIL LOGIC (HINDI GINALAW) ---
         msg = MIMEMultipart()
         msg['From'] = f"A&P Production Team <{SYSTEM_EMAIL}>"
         msg['To'] = inquiry.email
@@ -272,8 +272,12 @@ def send_quote(inquiry_id: int, req: QuoteRequest, db: Session = Depends(get_db)
         server.login(SYSTEM_EMAIL, SYSTEM_APP_PASSWORD)
         server.send_message(msg)
         server.quit()
-        
-        # --- 3. 💡 BAGONG CHAT LOGIC (AUTO-SEND TO INBOX) 💡 ---
+    except Exception as e:
+        print(f"Binalewala ang email error dahil naka-block sa HF: {e}")
+        pass # Papayagan niya itong mag-skip at ituloy ang next lines
+
+    # --- 3. MAAAYOS NA PAPASOK ANG CHAT LOGIC AT DB UPDATE ---
+    try:
         from app.models.production import Message
         formatted_dp = '{:,.2f}'.format(downpayment)
         new_chat_msg = Message(
@@ -284,7 +288,6 @@ def send_quote(inquiry_id: int, req: QuoteRequest, db: Session = Depends(get_db)
         )
         db.add(new_chat_msg)
 
-        # --- 4. EXISTING DB UPDATE LOGIC ---
         inquiry.quoted_amount = req.amount
         inquiry.quote_description = req.description
         inquiry.status = "Awaiting Downpayment"
@@ -292,10 +295,10 @@ def send_quote(inquiry_id: int, req: QuoteRequest, db: Session = Depends(get_db)
         db.refresh(inquiry) 
         
         create_notification(db, "Quotation Sent", f"Invoice generated for {inquiry.full_name}. Awaiting PayMongo payment.", "payment", "/invoices")
-        return {"message": "Quotation and Payment Link sent to Email and Chat successfully!"}
+        return {"message": "Quotation generated successfully. Check your dashboard chat for the payment link!"}
     except Exception as e:
-        print(f"Send Quote Error: {e}")
-        raise HTTPException(status_code=500, detail="Generated PayMongo link but failed to send email/message.")
+        print(f"Database Save Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save quotation to database.")
 
 @router.post("/inquiries/{inquiry_id}/auto-sync")
 def auto_sync_paymongo(inquiry_id: int, db: Session = Depends(get_db)):
